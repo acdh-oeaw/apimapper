@@ -1,5 +1,5 @@
 import pytest
-from apimapper import APIMapper
+from apimapper.apimapper import APIMapper
 
 
 def test_bad_config():
