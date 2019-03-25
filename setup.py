@@ -1,10 +1,15 @@
 from setuptools import setup, find_packages
 
 
+# read the contents of your README file
+from os import path
+with open('README.md', 'r') as f:
+    long_description = f.read()
+
 setup(name='apimapper',
-      version='0.5',
+      version='0.6',
       description='API Mapper',
-      long_description='Maps API responses to desrired schema',
+      long_description=long_description,
       long_description_content_type='text/x-rst',
       classifiers=[
         'Development Status :: 3 - Alpha',
