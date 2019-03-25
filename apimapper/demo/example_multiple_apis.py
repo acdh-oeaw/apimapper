@@ -20,7 +20,7 @@ VIAF_PERSON_MAP = {config.RESULT: 'result',
 GND_PERSON_SOURCE = {config.URL: 'https://lobid.org/gnd/search',
                      config.QUERY_FIELD: 'q',
                      config.PAYLOAD: {'format':'json:suggest',
-                                      'filter': 'type:Person',
+                                      'filter': 'type:Person',a
                                       'q': None}}
     
 VIAF_PERSON_SOURCE =  {config.URL: 'http://www.viaf.org/viaf/AutoSuggest',
@@ -37,7 +37,7 @@ def main():
     results = []
     for api in apis:            
         res = api.fetch_results('Pratchett')
-        results.extend(api.fetch_results(res))
+        results.extend(res)
 
     pprint(results)
 

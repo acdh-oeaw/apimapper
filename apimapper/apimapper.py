@@ -2,7 +2,6 @@ import re
 import requests
 import logging
 import json
-from pprint import pprint
 from .config.config import *
 from .responsemapper import ResponseMapper
 
@@ -63,7 +62,14 @@ class APIMapper:
                 
             return {}
         headers = {'accept': 'application/json'}
-        original_response = requests.get(self.source.get('URL'), params=self.source.get(PAYLOAD), headers=headers)        
+        try:
+            original_response = requests.get(self.source.get('URL'), params=self.source.get(PAYLOAD), headers=headers)
+        except requests.exceptions.ConnectionError as ce:
+            # Keep calm and carry on
+            logging.error('Connection error while trying to access %s:\n %s',
+                          self.source.get('URL'), repr(ce))
+            return {}
+
         response_content = get_response_content()
         logging.debug(response_content)
         mapped_response = self.mapping.get_mapped_response(response_content)
