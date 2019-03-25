@@ -1,32 +1,32 @@
 '''
 Query different APIs with different payloads and obtain response in a common schema if preferred
 '''
-from apimapper.apimapper import APIMapper
+from apimapper import APIMapper
 from pprint import pprint
-from apimapper.config.config import *
+from apimapper import config
 
-GND_PERSON_MAP = {DIRECT: {'uri': 'id'},
-                  RULES: {'source': {RULE: '"GND"'},
-                          'label': {RULE: '"{p1}".split("|")[0].strip()',
-                                    FIELDS: {'p1': 'label'}}}}
+GND_PERSON_MAP = {config.DIRECT: {'uri': 'id'},
+                  config.RULES: {'source': {config.RULE: '"GND"'},
+                                 'label': {config.RULE: '"{p1}".split("|")[0].strip()',
+                                           config.FIELDS: {'p1': 'label'}}}}
            
-VIAF_PERSON_MAP = {RESULT: 'result',
-                   FILTER: {'nametype': 'personal'},
-                   DIRECT: {'label': 'displayForm'},
-                   RULES: {'source': {RULE: '"VIAF"'},
-                           'uri': {RULE: '"http://www.viaf.org/viaf/{p1}"',
-                                   FIELDS: {'p1': 'viafid'}}}}
+VIAF_PERSON_MAP = {config.RESULT: 'result',
+                   config.FILTER: {'nametype': 'personal'},
+                   config.DIRECT: {'label': 'displayForm'},
+                   config.RULES: {'source': {config.RULE: '"VIAF"'},
+                                  'uri': {config.RULE: '"http://www.viaf.org/viaf/{p1}"',
+                                          config.FIELDS: {'p1': 'viafid'}}}}
 
-GND_PERSON_SOURCE = {URL: 'https://lobid.org/gnd/search',
-                     QUERY_FIELD: 'q',
-                     PAYLOAD: {'format':'json:suggest',
-                               'filter': 'type:Person',
-                               'q': None}}
+GND_PERSON_SOURCE = {config.URL: 'https://lobid.org/gnd/search',
+                     config.QUERY_FIELD: 'q',
+                     config.PAYLOAD: {'format':'json:suggest',
+                                      'filter': 'type:Person',
+                                      'q': None}}
     
-VIAF_PERSON_SOURCE =  {URL: 'http://www.viaf.org/viaf/AutoSuggest',
-                       QUERY_FIELD: 'query',
+VIAF_PERSON_SOURCE =  {config.URL: 'http://www.viaf.org/viaf/AutoSuggest',
+                       config.QUERY_FIELD: 'query',
                        # only resources having the nametype "personal" will be returned                           
-                       PAYLOAD: {'query': None}}
+                       config.PAYLOAD: {'query': None}}
            
 
 def main():
@@ -36,8 +36,8 @@ def main():
     apis = [gnd, viaf]
     results = []
     for api in apis:            
-        api.fetch_results('Pratchett')
-        results.extend(api.fetch_results(''))
+        res = api.fetch_results('Pratchett')
+        results.extend(api.fetch_results(res))
 
     pprint(results)
 
