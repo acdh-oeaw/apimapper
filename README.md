@@ -1,22 +1,23 @@
 # API Wrapper
 
-* Setup
-  * Create a virtual environment, acivate it. For example:
+## Setup
+* Create a virtual environment, acivate it. For example:
     * conda create -n apimapper python=3.6
     * conda activate apimapper 
   * pip install -r requirements.txt
 
-* Install package
-  * from PyPi: 
+## Install package
+* from PyPi: 
     pip install apimapper
-  * from source: 
+* from source: 
     pip install -e .
 
- * Unit Testing
+## Unit Testing
    tests> python -m pytest
 
-* Examples
-** Using GND and VIAF to look up a person, mapping their responses to a common JSON scema
+## Usage
+* Multiple APIs (GND and VIAF) mapped to a common JSON schema
+
 VIAF only returns VIAF ID - which is contructed into a url using a "rule"
 ```
 from apimapper import APIMapper
@@ -50,7 +51,9 @@ for api in apis:
 
 print(results)
 ```
-** Using mapping Rules
+
+* Using mapping rules
+
 Splitting the GND label field into meaningful subparts
 ```
 from apimapper import APIMapper
