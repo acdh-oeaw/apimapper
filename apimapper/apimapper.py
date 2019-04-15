@@ -29,10 +29,21 @@ class APIMapper:
         return
 
     def add_query(self, query):
+        full_query = query
         if self.source.get(QUERY_FIELD, ''):
-            self.add_payload({self.source.get(QUERY_FIELD): query})
+            if self.source.get(QUERY_PREFIX_WILDCARD, False):
+                full_query = '*{}'.format(full_query)
+            else:
+                pass
+            if self.source.get(QUERY_SUFFIX_WILDCARD, False):
+                full_query = '{}*'.format(full_query)
+            else:
+                pass
+                
+            self.add_payload({self.source.get(QUERY_FIELD): full_query})
                              
         return
+    
     def fetch_results(self, query=None):
         '''
         requests the url with the payload as specified in the source
