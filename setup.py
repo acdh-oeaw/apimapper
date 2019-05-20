@@ -7,10 +7,10 @@ with open('README.md', 'r') as f:
     long_description = f.read()
 
 setup(name='apimapper',
-      version='0.7',
+      version='0.7.2',
       description='API Mapper',
       long_description=long_description,
-      long_description_content_type='text/x-rst',
+      long_description_content_type='text/markdown',
       classifiers=[
         'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: MIT License',

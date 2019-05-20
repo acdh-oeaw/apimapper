@@ -22,7 +22,7 @@ def main():
                                                           config.FIELDS: {'p1': 'label'}}}}
     
     api = APIMapper(GND_PERSON_SOURCE, GND_PERSON_MAP)
-    res = api.fetch_results('Doctor')
+    res = api.fetch_results('Doctor Who')
     pprint(res)
     
     return

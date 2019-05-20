@@ -2,8 +2,10 @@ import re
 import requests
 import logging
 import json
+
 from .config.config import *
 from .responsemapper import ResponseMapper
+
 
 class APIMapper:
     def __init__(self, source, mapping=None):
@@ -30,17 +32,16 @@ class APIMapper:
 
     def add_query(self, query):
         full_query = query
-        if self.source.get(QUERY_FIELD, ''):
-            if self.source.get(QUERY_PREFIX_WILDCARD, False):
-                full_query = '*{}'.format(full_query)
-            else:
-                pass
-            if self.source.get(QUERY_SUFFIX_WILDCARD, False):
-                full_query = '{}*'.format(full_query)
-            else:
-                pass
+        if self.source.get(QUERY_PREFIX_WILDCARD, False):
+            full_query = '*{}'.format(full_query)
+        else:
+            pass
+        if self.source.get(QUERY_SUFFIX_WILDCARD, False):
+            full_query = '{}*'.format(full_query)
+        else:
+            pass
                 
-            self.add_payload({self.source.get(QUERY_FIELD): full_query})
+        self.add_payload({self.source.get(QUERY_FIELD): full_query})
                              
         return
     
@@ -50,8 +51,7 @@ class APIMapper:
         maps the response to the schema as specified in the source
         returns mapped_schema
         '''
-        if query:
-            self.add_query(query)
+        self.add_query(query)
             
         def get_response_content():
             '''
@@ -59,22 +59,24 @@ class APIMapper:
             and returns json decoded response from the result field if specified in the source
             or the complete response
             '''
-            if not re.search(r'^2\d\d$', str(original_response.status_code)):
-                # Not a successful request
+            if  re.search(r'^2\d\d$', str(original_response.status_code)):
+                try:
+                    return json.loads(original_response.content)
+            
+                except Exception as e: # super bad!
+                    logging.error('Cannot read API response, got %s', original_response.content)
+                    logging.error(repr(e))
+                    # Keep calm and carry on
+            else:
+                # bad status code in response
                 logging.error('Bad request, got %s', original_response)
 
-            try:
-                return json.loads(original_response.content)
-            
-            except Exception as e: # super bad!
-                logging.error('Cannot read API response, got %s', original_response.content)
-                logging.error(repr(e))
-                # Keep calm and carry on
                 
             return {}
         headers = {'accept': 'application/json'}
         try:
             original_response = requests.get(self.source.get('URL'), params=self.source.get(PAYLOAD), headers=headers)
+            
         except requests.exceptions.ConnectionError as ce:
             # Keep calm and carry on
             logging.error('Connection error while trying to access %s:\n %s',

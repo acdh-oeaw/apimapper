@@ -70,21 +70,24 @@ class ResponseMapper:
         if not self.mapping:
             logging.error('No mapping found. Returning as-is.')
             return original_response
-        
-        if self.mapping.get(RESULT):
-            mapped_response = []
-            original_response = original_response.get(self.mapping.get(RESULT), [])
 
-            try:
-                for res_item in original_response: # what
-                    mapped_item = self._map_item(res_item)
-                    if len(mapped_item):
-                        mapped_response.append(mapped_item)
-                    else:
-                        pass
-                return mapped_response
-            except TypeError as te:
-                pass
+        mapped_response = []        
+        if self.mapping.get(RESULT):
+            original_response = original_response.get(self.mapping.get(RESULT), [])
+        else:
+            pass
+        
+        try:
+            for res_item in original_response: # what
+                mapped_item = self._map_item(res_item)
+                if len(mapped_item):
+                    mapped_response.append(mapped_item)
+                else:
+                    pass
+                
+            return mapped_response
+        except TypeError as te:
+            pass
 
         return []
 
