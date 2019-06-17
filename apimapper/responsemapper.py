@@ -1,6 +1,7 @@
 from .config.config import *
 import logging
-
+from collections import Iterable
+from copy import deepcopy
 logger = logging.getLogger(__name__)
 
 
@@ -12,7 +13,8 @@ class ResponseMapper:
     def _is_relevant_result(self, res_item):
         '''
         called for every item in the response (res_item)
-        returns True if the response matches the "filter" condition specified in the configuration
+        returns True if the response matches the "filter" condition specified in the configurationq
+
         '''
         for filter_field, filter_value in self.mapping.get(FILTER, {}).items():
             if res_item.get(filter_field) != filter_value:
@@ -32,7 +34,8 @@ class ResponseMapper:
                     
             # obtain values from response to evauate the "mapping rule"
             for k, v in fields.items():
-                eval_params[k] = res_item.get(v, '')
+                eval_params[k] = self._deep_search(res_item, v)
+                # res_item.get(v, '')
                 logging.debug('%s: %s', k, rule.format(**eval_params))
 
             try:
@@ -50,9 +53,24 @@ class ResponseMapper:
         # Direct field based mapping
         mapped_schema = {}
         for to_key, from_key in self.mapping.get(DIRECT, {}).items():
-            mapped_schema[to_key] = res_item.get(from_key)
+            mapped_schema[to_key] = self._deep_search(res_item, from_key)
         return mapped_schema
-    
+
+    @staticmethod
+    def _deep_search(res_item, from_key_path):
+        '''
+        maps the parmeter empedded within JSON fields
+        '''
+        
+        if not isinstance(from_key_path, str) and isinstance(from_key_path, Iterable):
+            deep_search = deepcopy(res_item)
+            for from_key_item in from_key_path:
+                deep_search = deep_search.get(from_key_item)
+
+            return deep_search
+        
+        return res_item.get(from_key_path)
+
     def _map_item(self, res_item):
         # filter and map response item
         if self._is_relevant_result(res_item):

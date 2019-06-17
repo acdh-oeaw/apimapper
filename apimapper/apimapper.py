@@ -8,10 +8,11 @@ from .responsemapper import ResponseMapper
 
 
 class APIMapper:
-    def __init__(self, source, mapping=None):
+    def __init__(self, source, mapping=None, timeout=1):
         # URL, result, mapping, filter
         self.source = source
         self.mapping = ResponseMapper(mapping)
+        self.timeout = timeout if timeout else 10
         if not self.source  or not self.source.get(URL):
             raise ValueError('Bad source, no URL')
 
@@ -75,7 +76,9 @@ class APIMapper:
             return {}
         headers = {'accept': 'application/json'}
         try:
-            original_response = requests.get(self.source.get('URL'), params=self.source.get(PAYLOAD), headers=headers)
+            original_response = requests.get(self.source.get('URL'),
+                                             params=self.source.get(PAYLOAD),
+                                             headers=headers)
             
         except requests.exceptions.ConnectionError as ce:
             # Keep calm and carry on
