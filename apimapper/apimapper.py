@@ -2,9 +2,11 @@ import re
 import requests
 import logging
 import json
+from requests.exceptions import Timeout
 
 from .config.config import *
 from .responsemapper import ResponseMapper
+
 
 
 class APIMapper:
@@ -12,7 +14,7 @@ class APIMapper:
         # URL, result, mapping, filter
         self.source = source
         self.mapping = ResponseMapper(mapping)
-        self.timeout = timeout if timeout else 10
+        self.timeout = timeout if timeout else 1
         if not self.source  or not self.source.get(URL):
             raise ValueError('Bad source, no URL')
 
@@ -78,13 +80,15 @@ class APIMapper:
         try:
             original_response = requests.get(self.source.get('URL'),
                                              params=self.source.get(PAYLOAD),
-                                             headers=headers)
+                                             headers=headers,
+                                             timeout=0.5)
             
-        except requests.exceptions.ConnectionError as ce:
+        except (requests.exceptions.ConnectionError, Timeout)  as ce:
             # Keep calm and carry on
             logging.error('Connection error while trying to access %s:\n %s',
                           self.source.get('URL'), repr(ce))
             return {}
+
 
         response_content = get_response_content()
         logging.debug(response_content)
