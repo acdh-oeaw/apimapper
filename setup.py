@@ -7,7 +7,7 @@ with open('README.md', 'r') as f:
     long_description = f.read()
 
 setup(name='apimapper',
-      version='0.7.4',
+      version='0.7.5',
       description='API Mapper',
       long_description=long_description,
       long_description_content_type='text/markdown',

@@ -1,4 +1,5 @@
 URL = 'URL'
+TIMEOUT = 'TIMEOUT'
 PAYLOAD = 'payload'
 FILTER = 'filter'
 RESULT = 'result'

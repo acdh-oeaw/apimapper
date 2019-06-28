@@ -2,7 +2,7 @@ import re
 import requests
 import logging
 import json
-from requests.exceptions import Timeout
+
 
 from .config.config import *
 from .responsemapper import ResponseMapper
@@ -10,11 +10,11 @@ from .responsemapper import ResponseMapper
 
 
 class APIMapper:
-    def __init__(self, source, mapping=None, timeout=1):
+    def __init__(self, source, mapping=None, timeout:float=0.1):
         # URL, result, mapping, filter
         self.source = source
         self.mapping = ResponseMapper(mapping)
-        self.timeout = timeout if timeout else 1
+        self.timeout = timeout
         if not self.source  or not self.source.get(URL):
             raise ValueError('Bad source, no URL')
 
@@ -78,12 +78,12 @@ class APIMapper:
             return {}
         headers = {'accept': 'application/json'}
         try:
-            original_response = requests.get(self.source.get('URL'),
+            original_response = requests.get(self.source.get(URL),
                                              params=self.source.get(PAYLOAD),
                                              headers=headers,
-                                             timeout=0.5)
+                                             timeout=self.source.get(TIMEOUT, self.timeout))
             
-        except (requests.exceptions.ConnectionError, Timeout)  as ce:
+        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout)  as ce:
             # Keep calm and carry on
             logging.error('Connection error while trying to access %s:\n %s',
                           self.source.get('URL'), repr(ce))
