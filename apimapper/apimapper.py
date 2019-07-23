@@ -71,7 +71,9 @@ class APIMapper:
                     # Keep calm and carry on
             else:
                 # bad status code in response
-                logging.warning('Bad request, got %s', original_response.status_code)
+                logging.warning('Bad request, got %s\nContents:\n%s',
+                                original_response.status_code,
+                                original_response.content)
 
                 
             return {}

@@ -44,9 +44,9 @@ class ResponseMapper:
             except Exception as e:
                 # Bad rule: keep calm and carry on
                 mapped_schema[to_key] = ''
-                logging.warning('Encountered bad rule (%s) for input "%s"',
-                                rule_data, eval_params)
-                logging.warning(e)
+                logging.warning('Encountered bad rule (%s) for input "%s"\n %s',
+                                rule_data, eval_params, repr(e))
+                
         return mapped_schema
     
     def _map_item_direct(self, res_item):
