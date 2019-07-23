@@ -67,12 +67,11 @@ class APIMapper:
                     return json.loads(original_response.content)
             
                 except Exception as e: # super bad!
-                    logging.error('Cannot read API response, got %s', original_response.content)
-                    logging.error(repr(e))
+                    logging.warning('Cannot read API response, got %s. Error: %s', original_response.content, repr(e))
                     # Keep calm and carry on
             else:
                 # bad status code in response
-                logging.error('Bad request, got %s', original_response)
+                logging.warning('Bad request, got %s', original_response.status_code)
 
                 
             return {}
@@ -85,8 +84,8 @@ class APIMapper:
             
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout)  as ce:
             # Keep calm and carry on
-            logging.error('Connection error while trying to access %s:\n %s',
-                          self.source.get('URL'), repr(ce))
+            logging.warning('Connection error while trying to access %s:\n %s',
+                            self.source.get('URL'), repr(ce))
             return {}
 
 
