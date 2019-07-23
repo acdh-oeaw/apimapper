@@ -86,26 +86,21 @@ class ResponseMapper:
         map original response to fields specified in config
         '''
         if not self.mapping:
-            logging.error('No mapping found. Returning as-is.')
+            logging.warning('No mapping found. Returning as-is.')
             return original_response
 
         mapped_response = []        
         if self.mapping.get(RESULT):
             original_response = original_response.get(self.mapping.get(RESULT), [])
-        else:
-            pass
         
         try:
             for res_item in original_response: # what
                 mapped_item = self._map_item(res_item)
-                if len(mapped_item):
-                    mapped_response.append(mapped_item)
-                else:
-                    pass
+                if len(mapped_item): mapped_response.append(mapped_item)
                 
             return mapped_response
         except TypeError as te:
-            pass
+            logging.warning('Encountered TypeError: %s', repr(te))
 
         return []
 
