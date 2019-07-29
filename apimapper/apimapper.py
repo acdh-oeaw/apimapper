@@ -20,7 +20,7 @@ class APIMapper:
 
         return
 
-    def add_payload(self, payload_dict):
+    def add_payload(self, payload_dict):       
         if not self.source.get(PAYLOAD):
             self.source[PAYLOAD] = {}
             
@@ -34,6 +34,10 @@ class APIMapper:
         return
 
     def add_query(self, query):
+        '''
+        Adds query string to the payload, 
+        sandwiched by wildcards as applicable
+        '''
         full_query = query
         if self.source.get(QUERY_PREFIX_WILDCARD, False):
             full_query = '*{}'.format(full_query)
@@ -77,11 +81,17 @@ class APIMapper:
 
                 
             return {}
-        headers = {'accept': 'application/json'}
+
+        # set accept property in header
+        if not HEADER in self.source:            
+            self.source[HEADER] = {'accept': 'application/json'}
+        else:
+            self.source[HEADER]['accept'] = 'application/json'
+
         try:
             original_response = requests.get(self.source.get(URL),
                                              params=self.source.get(PAYLOAD),
-                                             headers=headers,
+                                             headers=self.source.get(HEADER),
                                              timeout=self.source.get(TIMEOUT, self.timeout))
             
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout)  as ce:

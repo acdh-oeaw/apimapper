@@ -1,6 +1,7 @@
 URL = 'URL'
 TIMEOUT = 'TIMEOUT'
 PAYLOAD = 'payload'
+HEADER = 'header'
 FILTER = 'filter'
 RESULT = 'result'
 RULE = 'rule'
