@@ -1,4 +1,5 @@
 import pytest
+
 from apimapper.apimapper import APIMapper
 
 
@@ -13,7 +14,8 @@ def test_bad_config():
 
     return
 
-def test_good_config():    
+
+def test_good_config():
     config = {'URL': 'http://someurl'}
     api = APIMapper(config)
     return
@@ -24,6 +26,7 @@ def test_bad_responsecode():
     api = APIMapper(config)
     assert not len(api.fetch_results())
     return
+
 
 def test_good_bad_responsecode():
     config = {'URL': 'http://google.com'}
