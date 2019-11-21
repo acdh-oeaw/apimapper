@@ -1,7 +1,9 @@
-from .config.config import *
 import logging
 from collections import Iterable
 from copy import deepcopy
+
+from .config.config import *
+
 logger = logging.getLogger(__name__)
 
 
@@ -31,7 +33,7 @@ class ResponseMapper:
             rule = rule_data.get(RULE)
             fields = rule_data.get(FIELDS, {})
             eval_params = {}
-                    
+
             # obtain values from response to evauate the "mapping rule"
             for k, v in fields.items():
                 eval_params[k] = self._deep_search(res_item, v)
@@ -44,11 +46,12 @@ class ResponseMapper:
             except Exception as e:
                 # Bad rule: keep calm and carry on
                 mapped_schema[to_key] = ''
-                logging.warning('Encountered bad rule (%s) for input "%s"\n %s',
-                                rule_data, eval_params, repr(e))
-                
+                logging.warning(
+                    'Encountered bad rule (%s) for input "%s"\n %s', rule_data,
+                    eval_params, repr(e))
+
         return mapped_schema
-    
+
     def _map_item_direct(self, res_item):
         # Direct field based mapping
         mapped_schema = {}
@@ -61,14 +64,15 @@ class ResponseMapper:
         '''
         maps the parmeter empedded within JSON fields
         '''
-        
-        if not isinstance(from_key_path, str) and isinstance(from_key_path, Iterable):
+
+        if not isinstance(from_key_path, str) and isinstance(
+                from_key_path, Iterable):
             deep_search = deepcopy(res_item)
             for from_key_item in from_key_path:
                 deep_search = deep_search.get(from_key_item)
 
             return deep_search
-        
+
         return res_item.get(from_key_path)
 
     def _map_item(self, res_item):
@@ -76,11 +80,11 @@ class ResponseMapper:
         if self._is_relevant_result(res_item):
             # append mapped schema to response
             direct_map = self._map_item_direct(res_item)
-            rule_map = self._map_item_rules(res_item)            
+            rule_map = self._map_item_rules(res_item)
             return {**direct_map, **rule_map}
-        
+
         return {}
-    
+
     def get_mapped_response(self, original_response):
         '''
         map original response to fields specified in config
@@ -89,21 +93,18 @@ class ResponseMapper:
             logging.warning('No mapping found. Returning as-is.')
             return original_response
 
-        mapped_response = []        
+        mapped_response = []
         if self.mapping.get(RESULT):
-            original_response = original_response.get(self.mapping.get(RESULT), [])
-        
+            original_response = original_response.get(
+                self.mapping.get(RESULT), [])
+
         try:
-            for res_item in original_response: # what
+            for res_item in original_response:  # what
                 mapped_item = self._map_item(res_item)
                 if len(mapped_item): mapped_response.append(mapped_item)
-                
+
             return mapped_response
         except TypeError as te:
             logging.warning('Encountered TypeError: %s', repr(te))
 
         return []
-
-
-    
-        
