@@ -38,7 +38,8 @@ class ResponseMapper:
             for k, v in fields.items():
                 eval_params[k] = self._deep_search(res_item, v)
                 # res_item.get(v, '')
-                logging.debug('%s: %s', k, rule.format(**eval_params))
+
+            # logging.debug('%s: %s', k, rule.format(**eval_params))
 
             try:
                 mapped_schema[to_key] = eval(rule.format(**eval_params))
