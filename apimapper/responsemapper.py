@@ -1,5 +1,10 @@
 import logging
-from collections import Iterable
+
+try:
+    from collections.abc import Iterable
+except ImportError:
+    from collections import Iterable
+
 from copy import deepcopy
 
 from .config.config import *
