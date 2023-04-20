@@ -7,7 +7,7 @@
     pip install -e .
 
 ## Unit Testing
-   tests> python -m pytest
+   >pytest
 
 ## Usage
 
